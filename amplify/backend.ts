@@ -22,8 +22,6 @@ const eventBus = aws_events.EventBus.fromEventBusName(
 
 backend.data.addEventBridgeDataSource("EventBridgeDataSource", eventBus);
 
-// generate code for a cloudwatch logs role
-
 const cloudWatchLogsRole = new aws_iam.Role(
   apiStack,
   "MyLibraryCloudWatchRole",

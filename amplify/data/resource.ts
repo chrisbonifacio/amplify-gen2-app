@@ -6,6 +6,7 @@ const schema = a.schema({
     orderId: a.id(),
     status: a.ref("OrderStatus"),
     message: a.string(),
+    __typename: a.string(),
   }),
   publishOrderToEventBridge: a
     .mutation()
@@ -33,7 +34,6 @@ const schema = a.schema({
     .authorization((allow) => [allow.publicApiKey(), allow.guest()])
     .handler(
       a.handler.custom({
-        dataSource: "NONE_DS",
         entry: "./publishOrderFromEventBridge.js",
       })
     ),
@@ -43,7 +43,6 @@ const schema = a.schema({
     .authorization((allow) => [allow.publicApiKey(), allow.guest()])
     .handler(
       a.handler.custom({
-        dataSource: "NoneDataSource",
         entry: "./onOrderFromEventBridge.js",
       })
     ),
@@ -54,7 +53,6 @@ const schema = a.schema({
     .authorization((allow) => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
-        dataSource: "NONE_DS",
         entry: "./noop.js",
       })
     ),

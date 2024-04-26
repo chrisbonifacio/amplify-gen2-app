@@ -3,6 +3,7 @@ import { auth } from "./auth/resource";
 import { data } from "./data/resource";
 import { aws_events } from "aws-cdk-lib";
 import { aws_iam } from "aws-cdk-lib";
+import { publishOrderFromEventBridge } from "./data/graphql/mutations";
 
 export const backend = defineBackend({
   auth,
@@ -20,8 +21,6 @@ const eventBus = aws_events.EventBus.fromEventBusName(
 );
 
 backend.data.addEventBridgeDataSource("EventBridgeDataSource", eventBus);
-
-backend.data.addNoneDataSource("NoneDataSource");
 
 // generate code for a cloudwatch logs role
 
@@ -81,18 +80,7 @@ const rule = new aws_events.CfnRule(eventStack, "MyOrderRule", {
         .attrGraphQlEndpointArn,
       roleArn: eventBusRole.roleArn,
       appSyncParameters: {
-        graphQlOperation: `
-        mutation PublishOrderFromEventBridge(
-          $orderId: ID!
-          $status: String!
-          $message: String!
-        ) {
-          publishOrderFromEventBridge(orderId: $orderId, status: $status, message: $message) {
-            orderId
-            status
-            message
-          }
-        }`,
+        graphQlOperation: publishOrderFromEventBridge,
       },
       inputTransformer: {
         inputPathsMap: {

@@ -1,54 +1,68 @@
 "use client";
-import { FormEvent, useState } from "react";
-
-import { generateClient } from "aws-amplify/api";
-import { Schema } from "@/amplify/data/resource";
 
 import { Amplify } from "aws-amplify";
-import config from "@/amplifyconfiguration.json";
+import config from "../amplify_outputs.json";
 
 Amplify.configure(config);
 
+import { type ChangeEvent, useState } from "react";
+import { generateClient } from "aws-amplify/api";
+import { uploadData } from "aws-amplify/storage";
+import { Schema } from "@/amplify/data/resource";
+import "./App.css";
+
+// Generating the client
 const client = generateClient<Schema>();
 
-export default function App() {
-  const [prompt, setPrompt] = useState<string>("");
-  const [answer, setAnswer] = useState<string | null>(null);
+type IdentifyTextReturnType = Schema["identifyText"]["returnType"];
 
-  const sendPrompt = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+function App() {
+  // State to hold the recognized text
+  const [path, setPath] = useState<string>("");
+  const [textData, setTextData] = useState<IdentifyTextReturnType>();
 
-    const { data, errors } = await client.queries.generateHaiku({
-      prompt,
-    });
+  // Function to handle file upload to S3 bucket
+  const handleTranslate = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
 
-    if (!errors) {
-      setAnswer(data);
-      setPrompt("");
-    } else {
-      console.log(errors);
+      const s3Path = "public/" + file.name;
+
+      try {
+        uploadData({
+          path: s3Path,
+          data: file,
+        });
+
+        setPath(s3Path);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
+  // Function to recognize text from the uploaded image
+  const recognizeText = async () => {
+    // Identifying text in the uploaded image
+    const { data } = await client.queries.identifyText({
+      path, // File name
+    });
+    setTextData(data);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 dark:text-white">
+    <div>
+      <h1>Amazon Rekognition Text Recognition</h1>
       <div>
-        <h1 className="text-3xl font-bold text-center mb-4">Haiku Generator</h1>
-
-        <form className="mb-4 self-center max-w-[500px]" onSubmit={sendPrompt}>
-          <input
-            className="text-black p-2 w-full"
-            placeholder="Enter a prompt..."
-            name="prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-        </form>
-
-        <div className="text-center">
-          <pre>{answer}</pre>
+        <input type="file" onChange={handleTranslate} />
+        <button onClick={recognizeText}>Recognize Text</button>
+        <div>
+          <h3>Recognized Text:</h3>
+          {textData}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
+
+export default App;

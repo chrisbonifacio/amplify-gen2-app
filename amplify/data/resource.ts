@@ -1,15 +1,17 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  generateHaiku: a
+  identifyText: a
     .query()
-    .arguments({ prompt: a.string().required() })
+    .arguments({
+      path: a.string(),
+    })
     .returns(a.string())
     .authorization((allow) => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
-        dataSource: "BedrockDataSource",
-        entry: "./generateHaiku.js",
+        entry: "./identifyText.js",
+        dataSource: "RekognitionDataSource",
       })
     ),
 });

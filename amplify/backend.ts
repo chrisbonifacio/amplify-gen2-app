@@ -1,47 +1,41 @@
 import { defineBackend } from "@aws-amplify/backend";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
-import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Stack } from "aws-cdk-lib";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { storage } from "./storage/resource";
 
-export const backend = defineBackend({
+const backend = defineBackend({
   auth,
   data,
+  storage,
 });
 
-const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0";
+const dataStack = Stack.of(backend.data);
 
-const bedrockDataSource = backend.data.addHttpDataSource(
-  "BedrockDataSource",
-  "https://bedrock-runtime.us-east-1.amazonaws.com",
+// Set environment variables for the S3 Bucket name
+backend.data.resources.cfnResources.cfnGraphqlApi.environmentVariables = {
+  S3_BUCKET_NAME: backend.storage.resources.bucket.bucketName,
+};
+
+const rekognitionDataSource = backend.data.addHttpDataSource(
+  "RekognitionDataSource",
+  `https://rekognition.${dataStack.region}.amazonaws.com`,
   {
     authorizationConfig: {
-      signingRegion: Stack.of(backend.data).region,
-      signingServiceName: "bedrock",
+      signingRegion: dataStack.region,
+      signingServiceName: "rekognition",
     },
   }
 );
 
-bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
+rekognitionDataSource.grantPrincipal.addToPrincipalPolicy(
   new PolicyStatement({
-    effect: Effect.ALLOW,
-    actions: ["bedrock:InvokeModel"],
-    resources: [
-      `arn:aws:bedrock:${
-        Stack.of(backend.data).region
-      }::foundation-model/${MODEL_ID}`,
-    ],
+    actions: ["rekognition:DetectText", "rekognition:DetectLabels"],
+    resources: ["*"],
   })
 );
 
-backend.data.resources.cfnResources.cfnGraphqlApi.environmentVariables = {
-  MODEL_ID,
-};
-
-// backend.generateHaikuFunction.resources.lambda.addToRolePolicy(
-//   new PolicyStatement({
-//     effect: Effect.ALLOW,
-//     actions: ["bedrock:InvokeModel"],
-//     resources: [`arn:aws:bedrock:*::foundation-model/${MODEL_ID}`],
-//   })
-// );
+backend.storage.resources.bucket.grantReadWrite(
+  rekognitionDataSource.grantPrincipal
+);

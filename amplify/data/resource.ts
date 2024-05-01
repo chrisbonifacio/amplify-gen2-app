@@ -10,6 +10,12 @@ export const convertTextToSpeech = defineFunction({
 });
 
 const schema = a.schema({
+  Todo: a
+    .model({
+      content: a.string().required(),
+      done: a.boolean().required(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
   convertTextToSpeech: a
     .mutation()
     .arguments({
@@ -18,11 +24,6 @@ const schema = a.schema({
     .returns(a.string().required())
     .authorization((allow) => [allow.publicApiKey()])
     .handler(a.handler.function(convertTextToSpeech)),
-  noop: a
-    .query()
-    .returns(a.string())
-    .authorization((allow) => [allow.publicApiKey()])
-    .handler(a.handler.custom({ entry: "./noop.js" })),
 });
 
 export type Schema = ClientSchema<typeof schema>;

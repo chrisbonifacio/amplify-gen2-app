@@ -23,9 +23,9 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://df5pmsb3wvgrnecxxngn4nr7xq.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://s7vjcncd6nbj7a4sych57rau3i.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-xo35fxei3ndz5a6dzvwpunr3se",
+    "api_key": "da2-ky6v5o6ka5dslhjshjxkgqmifu",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AMAZON_COGNITO_USER_POOLS",
@@ -48,14 +48,14 @@
               "name": "content",
               "isArray": false,
               "type": "String",
-              "isRequired": true,
+              "isRequired": false,
               "attributes": []
             },
             "done": {
               "name": "done",
               "isArray": false,
               "type": "Boolean",
-              "isRequired": true,
+              "isRequired": false,
               "attributes": []
             },
             "createdAt": {
@@ -108,28 +108,12 @@
         }
       },
       "enums": {},
-      "nonModels": {},
-      "mutations": {
-        "convertTextToSpeech": {
-          "name": "convertTextToSpeech",
-          "isArray": false,
-          "type": "String",
-          "isRequired": true,
-          "arguments": {
-            "text": {
-              "name": "text",
-              "isArray": false,
-              "type": "String",
-              "isRequired": true
-            }
-          }
-        }
-      }
+      "nonModels": {}
     }
   },
   "storage": {
     "aws_region": "us-east-1",
-    "bucket_name": "amplify-amplifygen2app-cb-predictionsgen2bucketd3f-pd9itpbcefkh"
+    "bucket_name": "amplify-amplifygen2app-cb-myprojectfilesbucket89ac-vglvli0g8cph"
   },
   "version": "1"
 }

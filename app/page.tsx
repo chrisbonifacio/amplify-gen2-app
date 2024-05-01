@@ -7,20 +7,26 @@ Amplify.configure(config);
 
 import "./App.css";
 import { generateClient } from "aws-amplify/api";
-import type { Schema } from "../amplify/data/resource";
 import { getUrl } from "aws-amplify/storage";
 import { useState } from "react";
 
-const client = generateClient<Schema>();
+import { type Schema } from "@/amplify/data/resource";
+import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/data";
+import outputs from "@/amplify_outputs.json";
+import { cookies } from "next/headers";
+import { cookieBasedClient } from "@/utils/amplifyServerUtils";
 
-type PollyReturnType = Schema["convertTextToSpeech"]["returnType"];
+const fetchTodos = async () => {
+  const { data: todos, errors } = await cookieBasedClient.models.Todo.list();
 
+  if (!errors) {
+    return todos;
+  }
+};
 function App() {
-  const [src, setSrc] = useState("");
-  const [file, setFile] = useState<PollyReturnType>("");
   return (
     <div className="flex flex-col">
-      <button
+      {/* <button
         onClick={async () => {
           const { data, errors } = await client.mutations.convertTextToSpeech({
             text: "Hello World!",
@@ -45,8 +51,8 @@ function App() {
         }}
       >
         Fetch audio
-      </button>
-      <a href={src}>Get audio file</a>
+      </button> */}
+      {/* <a href={src}>Get audio file</a> */}
     </div>
   );
 }

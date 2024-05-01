@@ -1,0 +1,70 @@
+{
+  "auth": {
+    "user_pool_id": "us-east-1_hnZKUUOjT",
+    "aws_region": "us-east-1",
+    "user_pool_client_id": "2jnt06lc6i5lm96pk5ivhl5r0",
+    "identity_pool_id": "us-east-1:ab798ea5-085f-4529-aa64-866349b549c5",
+    "standard_required_attributes": [
+      "email"
+    ],
+    "username_attributes": [
+      "email"
+    ],
+    "user_verification_types": [
+      "email"
+    ],
+    "password_policy": {
+      "min_length": 8,
+      "require_numbers": true,
+      "require_lowercase": true,
+      "require_uppercase": true,
+      "require_symbols": true
+    },
+    "unauthenticated_identities_enabled": true
+  },
+  "data": {
+    "url": "https://df5pmsb3wvgrnecxxngn4nr7xq.appsync-api.us-east-1.amazonaws.com/graphql",
+    "aws_region": "us-east-1",
+    "api_key": "da2-xo35fxei3ndz5a6dzvwpunr3se",
+    "default_authorization_type": "API_KEY",
+    "authorization_types": [
+      "AMAZON_COGNITO_USER_POOLS",
+      "AWS_IAM"
+    ],
+    "model_introspection": {
+      "version": 1,
+      "models": {},
+      "enums": {},
+      "nonModels": {},
+      "queries": {
+        "noop": {
+          "name": "noop",
+          "isArray": false,
+          "type": "String",
+          "isRequired": false
+        }
+      },
+      "mutations": {
+        "convertTextToSpeech": {
+          "name": "convertTextToSpeech",
+          "isArray": false,
+          "type": "String",
+          "isRequired": true,
+          "arguments": {
+            "text": {
+              "name": "text",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "storage": {
+    "aws_region": "us-east-1",
+    "bucket_name": "amplify-amplifygen2app-cb-predictionsgen2bucketd3f-pd9itpbcefkh"
+  },
+  "version": "1"
+}

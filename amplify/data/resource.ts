@@ -1,17 +1,19 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  identifyText: a
+  translate: a
     .query()
     .arguments({
-      path: a.string(),
+      sourceLanguage: a.string().required(),
+      targetLanguage: a.string().required(),
+      text: a.string().required(),
     })
     .returns(a.string())
     .authorization((allow) => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
-        entry: "./identifyText.js",
-        dataSource: "RekognitionDataSource",
+        dataSource: "TranslateDataSource",
+        entry: "./translate.js",
       })
     ),
 });

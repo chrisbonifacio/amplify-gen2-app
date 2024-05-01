@@ -29,7 +29,8 @@
     "amplify/data/increment-like.ts",
     "amplify/functions/rest-auth",
     "amplify/data/getPost.js",
-    "amplify/data/addPost.js"
+    "amplify/data/addPost.js",
+    "amplify/data/translate.js"
   ],
   "exclude": ["node_modules"]
 }

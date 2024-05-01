@@ -14,6 +14,7 @@
     "@aws-appsync/utils": "^1.7.0",
     "@aws-sdk/client-bedrock-runtime": "^3.561.0",
     "@aws-sdk/client-rekognition": "^3.565.0",
+    "@aws-sdk/client-translate": "^3.565.0",
     "aws-amplify": "^6.2.0",
     "dotenv": "^16.4.5",
     "next": "14.1.0",

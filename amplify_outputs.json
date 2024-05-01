@@ -37,26 +37,34 @@
       "enums": {},
       "nonModels": {},
       "queries": {
-        "identifyText": {
-          "name": "identifyText",
+        "translate": {
+          "name": "translate",
           "isArray": false,
           "type": "String",
           "isRequired": false,
           "arguments": {
-            "path": {
-              "name": "path",
+            "sourceLanguage": {
+              "name": "sourceLanguage",
               "isArray": false,
               "type": "String",
-              "isRequired": false
+              "isRequired": true
+            },
+            "targetLanguage": {
+              "name": "targetLanguage",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            },
+            "text": {
+              "name": "text",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
             }
           }
         }
       }
     }
-  },
-  "storage": {
-    "aws_region": "us-east-1",
-    "bucket_name": "amplify-amplifygen2app-cb-predictionsgen2bucketd3f-xwpulycu4ujj"
   },
   "version": "1"
 }

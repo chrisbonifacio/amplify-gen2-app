@@ -1,12 +1,17 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
+  Todo: a
+    .model({
+      content: a.string(),
+      isDone: a.boolean(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
   OrderStatus: a.enum(["PENDING", "SHIPPED", "DELIVERED"]),
   OrderStatusChange: a.customType({
     orderId: a.id(),
     status: a.ref("OrderStatus"),
     message: a.string(),
-    __typename: a.string(),
   }),
   publishOrderToEventBridge: a
     .mutation()
@@ -16,7 +21,7 @@ const schema = a.schema({
       message: a.string(),
     })
     .returns(a.ref("OrderStatusChange"))
-    .authorization((allow) => [allow.publicApiKey(), allow.guest()])
+    .authorization((allow) => [allow.authenticated()])
     .handler(
       a.handler.custom({
         dataSource: "EventBridgeDataSource",
@@ -31,7 +36,7 @@ const schema = a.schema({
       message: a.string(),
     })
     .returns(a.ref("OrderStatusChange"))
-    .authorization((allow) => [allow.publicApiKey(), allow.guest()])
+    .authorization((allow) => [allow.authenticated()])
     .handler(
       a.handler.custom({
         entry: "./publishOrderFromEventBridge.js",
@@ -40,7 +45,7 @@ const schema = a.schema({
   onOrderFromEventBridge: a
     .subscription()
     .for(a.ref("publishOrderFromEventBridge"))
-    .authorization((allow) => [allow.publicApiKey(), allow.guest()])
+    .authorization((allow) => [allow.authenticated()])
     .handler(
       a.handler.custom({
         entry: "./onOrderFromEventBridge.js",

@@ -49,12 +49,13 @@ const schema = a.schema({
       profileImage: a.url(),
       profileImageBlurHash: a.string(),
       searchTerm: a.string().required(),
+      type: a.enum(["ADMIN", "USER"]),
       // sentFriendships: a.hasMany("Friendship", "senderId"),
       // receivedFriendships: a.hasMany("Friendship", "receiverId"),
     })
     .secondaryIndexes((index) => [
       index("phoneNumber").queryField("listUsersByPhoneNumber"),
-      index("searchTerm").queryField("listUsersBySearchTerm").sortKeys(["id"]),
+      index("searchTerm").queryField("listUsersBySearchTerm").sortKeys([""]),
     ])
     .authorization((allow) => [allow.owner()]),
 

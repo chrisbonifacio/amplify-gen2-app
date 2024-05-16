@@ -1,6 +1,6 @@
-import { Context, util } from "@aws-appsync/utils"; //
+import { util } from "@aws-appsync/utils"; //
 
-export const request = (ctx: Context) => {
+export const request = (ctx) => {
   const { phoneNumbers } = ctx.args;
 
   return {
@@ -11,6 +11,6 @@ export const request = (ctx: Context) => {
   };
 };
 
-export const response = (ctx: Context) => {
+export const response = (ctx) => {
   return ctx.result;
 };

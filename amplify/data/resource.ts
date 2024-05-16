@@ -10,33 +10,6 @@ const adminsAndManagers = (allow: any) => [
 ];
 
 const schema = a.schema({
-  // Todo: a
-  //   .model({
-  //     id: a.id().required(),
-  //     name: a.string().required(),
-  //     description: a.string(),
-  //     completed: a.boolean().required(),
-  //   })
-  //   .authorization(adminsAndManagers),
-
-  UserBatchResponse: a.customType({
-    activeUsers: a.ref("User").array(),
-  }),
-
-  checkBatchOfPhoneNumbersForActiveUsers: a
-    .query()
-    .arguments({
-      phoneNumbers: a.string().array(),
-    })
-    .returns(a.ref("User").array())
-    .handler(
-      a.handler.custom({
-        dataSource: a.ref("User"),
-        entry: "./functions/phoneBatchHandler.ts",
-      })
-    )
-    .authorization(adminsAndManagers),
-
   User: a
     .model({
       id: a.id().required(),
@@ -55,30 +28,39 @@ const schema = a.schema({
     })
     .secondaryIndexes((index) => [
       index("phoneNumber").queryField("listUsersByPhoneNumber"),
-      index("searchTerm").queryField("listUsersBySearchTerm").sortKeys([""]),
+      index("searchTerm").queryField("listUsersBySearchTerm").sortKeys(["id"]),
     ])
     .authorization((allow) => [allow.owner()]),
-
-  // Friendship: a
-  //   .model({
-  //     id: a.id().required(),
-  //     receiverId: a.id().required(),
-  //     receiver: a.belongsTo("User", "receiverId"),
-  //     senderId: a.id().required(),
-  //     sender: a.belongsTo("User", "senderId"),
-  //     // status: a.ref("FriendStatus").required(),
-  //   })
-  //   .authorization((allow) => [allow.publicApiKey()])
-  //   .secondaryIndexes((index) => [
-  //     index("senderId")
-  //       .name("bySender")
-  //       .sortKeys(["receiverId"])
-  //       .queryField("listFriendshipsBySenderId"),
-  //     index("receiverId")
-  //       .name("byReceiver")
-  //       .sortKeys(["senderId"])
-  //       .queryField("listFriendshipsByReceiverId"),
-  //   ]),
+  Message: a
+    .model({
+      senderId: a.string().required(),
+      receiverId: a.string().required(),
+      viewedTimeStamp: a.timestamp().required(),
+      content: a.string().required(),
+      status: a.string().required(),
+      createdAt: a.datetime().required(),
+    })
+    .authorization((allow) => [
+      allow.ownerDefinedIn("senderId"),
+      allow.ownerDefinedIn("receiverId").to(["read"]),
+    ])
+    .secondaryIndexes((index) => [
+      index("senderId").sortKeys(["viewedTimeStamp"]),
+      index("receiverId").sortKeys(["viewedTimeStamp"]),
+    ]),
+  checkBatchOfPhoneNumbersForActiveUsers: a
+    .query()
+    .arguments({
+      phoneNumbers: a.string().array(),
+    })
+    .returns(a.ref("User").array())
+    .handler(
+      a.handler.custom({
+        dataSource: a.ref("User"),
+        entry: "./functions/phoneBatchHandler.js",
+      })
+    )
+    .authorization(adminsAndManagers),
 });
 
 export type Schema = ClientSchema<typeof schema>;

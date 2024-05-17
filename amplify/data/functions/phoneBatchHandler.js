@@ -1,22 +1,22 @@
 import { util } from "@aws-appsync/utils";
 
 export const request = (ctx) => {
-  const userIds = [];
+  const phoneNumbers = [];
 
-  ctx.args.userIds.forEach((userId) => {
-    userIds.push(util.dynamodb.toMapValues({ id: userId }));
+  ctx.args.phoneNumbers.forEach((phoneNumber) => {
+    phoneNumbers.push(util.dynamodb.toMapValues({ phoneNumber }));
   });
 
   return {
     operation: "BatchGetItem",
     tables: {
-      [ctx.env.USER_TABLE]: {
-        keys: userIds,
+      [ctx.env.PHONENUMBER_TABLE]: {
+        keys: phoneNumbers,
       },
     },
   };
 };
 
 export const response = (ctx) => {
-  return ctx.result.data[ctx.env.USER_TABLE];
+  return ctx.result.data[ctx.env.PHONENUMBER_TABLE];
 };

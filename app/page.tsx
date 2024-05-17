@@ -12,9 +12,7 @@ import { getCurrentUser } from "aws-amplify/auth";
 const client = generateClient<Schema>();
 
 function Home({ signOut }: WithAuthenticatorProps) {
-  const [locations, setLocations] = useState<any>();
-  const [users, setUsers] = useState<any>();
-  const [examples, setExamples] = useState<any>();
+  const [phoneNumbers, setPhoneNumbers] = useState<any>();
 
   // const test = async () => {
   //   const currentUser = await getCurrentUser();
@@ -56,7 +54,7 @@ function Home({ signOut }: WithAuthenticatorProps) {
 
     console.log(data);
 
-    if (data) setLocations(data);
+    // if (data) setLocations(data);
   };
 
   const checkActivePhoneNumbers = async () => {
@@ -66,61 +64,14 @@ function Home({ signOut }: WithAuthenticatorProps) {
 
     const phoneNumbers = ["718-706-5432", "718-706-4327", ...fakePhoneNumbers];
 
-    const { data, errors } = await client.models.User.list({
-      filter: {
-        or: phoneNumbers.map((phoneNumber) => {
-          return {
-            phoneNumber: {
-              eq: phoneNumber,
-            },
-          };
-        }),
-      },
-      authMode: "apiKey",
-    });
+    const { data, errors } =
+      await client.queries.checkBatchOfPhoneNumbersForActiveUsers({
+        phoneNumbers,
+      });
 
     console.log(data);
 
-    setUsers(data);
-  };
-
-  const test = async () => {
-    const { data } = await client.models.Cart.create({
-      items: ["Tomatoz", "Ice", "Mint"],
-      customerId: "4c21b00a-fcfb-43c9-acd0-e7902188e07b",
-    });
-
-    console.log(data);
-  };
-
-  const getCustomerAndCart = async () => {
-    const { data: customer } = await client.models.Customer.get({
-      id: "4c21b00a-fcfb-43c9-acd0-e7902188e07b",
-    });
-
-    const cart = await customer.activeCart();
-
-    console.log({ customer, cart });
-  };
-
-  const listExamples = async () => {
-    const { data: examples } = await client.models.Example.listByTypeAndName(
-      {
-        type: "Test",
-      },
-      { sortDirection: "DESC" }
-    );
-
-    console.log(examples);
-  };
-
-  const createExample = async () => {
-    const { data: example } = await client.models.Example.create({
-      type: "Test",
-      name: "Example C",
-    });
-
-    console.log(example);
+    setPhoneNumbers(data);
   };
 
   return (
@@ -129,13 +80,9 @@ function Home({ signOut }: WithAuthenticatorProps) {
       {/* <button onClick={test}>Send Message</button> */}
       <button onClick={checkActivePhoneNumbers}>Check Phone Numbers</button>
       <button onClick={createLocation}>Create Location</button>
-      <button onClick={test}>Test</button>
-      <button onClick={getCustomerAndCart}>Get Customer and Cart</button>
-      <button onClick={createExample}>Create Example</button>
-      <button onClick={listExamples}>List Examples</button>
-
+      <button onClick={listLocations}>List Locations</button>
       <div>
-        <pre>{JSON.stringify(users, null, 2)}</pre>
+        <pre>{JSON.stringify(phoneNumbers, null, 2)}</pre>
       </div>
     </main>
   );

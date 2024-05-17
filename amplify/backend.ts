@@ -1,9 +1,8 @@
 import { defineBackend } from "@aws-amplify/backend";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
-import { Stack, aws_events } from "aws-cdk-lib";
+import { Stack } from "aws-cdk-lib";
 import { aws_iam } from "aws-cdk-lib";
-import { publishOrderFromEventBridge } from "./data/graphql/mutations";
 
 export const backend = defineBackend({
   auth,
@@ -11,11 +10,14 @@ export const backend = defineBackend({
 });
 
 backend.data.resources.cfnResources.cfnGraphqlApi.environmentVariables = {
-  USER_TABLE: "User-okmzm4g5l5d7jmkkn3kw5rqy2e-NONE",
+  PHONENUMBER_TABLE:
+    // replace with your own table name
+    `PhoneNumber-md4n36jl7za7xi4mie3cs3wyey-NONE`,
 };
 
 const apiStack = Stack.of(backend.data);
 
+// Enable logging for troubleshooting and debugging
 const cloudWatchLogsRole = new aws_iam.Role(
   apiStack,
   "MyLibraryCloudWatchRole2",

@@ -42,7 +42,7 @@ class CustomCredentialsProvider implements CredentialsAndIdentityIdProvider {
 
       const getIdResult = await cognitoidentity.getId({
         // Get the identityPoolId from config
-        IdentityPoolId: "<identity-pool-id-from-config>",
+        IdentityPoolId: outputs.auth.identity_pool_id,
         Logins: {
           // @ts-ignore
           [this?.federatedLogin?.domain]: this?.federatedLogin?.token,
@@ -80,10 +80,10 @@ class CustomCredentialsProvider implements CredentialsAndIdentityIdProvider {
 const customCredentialsProvider = new CustomCredentialsProvider();
 
 Amplify.configure(outputs, {
-  Auth: {
-    // Supply the custom credentials provider to Amplify
-    credentialsProvider: customCredentialsProvider,
-  },
+  // Auth: {
+  //   // Supply the custom credentials provider to Amplify
+  //   credentialsProvider: customCredentialsProvider,
+  // },
   ssr: true,
 });
 

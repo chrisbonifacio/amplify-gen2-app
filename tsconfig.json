@@ -30,7 +30,7 @@
     "amplify/functions/rest-auth",
     "amplify/data/getPost.js",
     "amplify/data/addPost.js",
-    "amplify/data/functions/phoneBatchHandler.js"
+    "amplify/data/functions/phoneBatchHandler.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -7,6 +7,9 @@ import "@aws-amplify/ui-react/styles.css";
 
 const client = generateClient<Schema>();
 
+type PhoneNumber =
+  Schema["checkBatchOfPhoneNumbersForActiveUsers"]["returnType"];
+
 function Home({ signOut }: WithAuthenticatorProps) {
   const [phoneNumbers, setPhoneNumbers] = useState<any>();
 
@@ -15,16 +18,35 @@ function Home({ signOut }: WithAuthenticatorProps) {
 
     const fakePhoneNumbers = largeArray.map((_, index) => `${index}`);
 
-    const phoneNumbers = ["718-706-5432", "718-706-4327", ...fakePhoneNumbers];
+    const phoneNumbersToCheckFor = [
+      "718-706-5432",
+      "718-706-4327",
+      ...fakePhoneNumbers,
+    ];
 
-    const { data, errors } =
+    let { data: phoneNumbers, errors } =
       await client.queries.checkBatchOfPhoneNumbersForActiveUsers({
-        phoneNumbers,
+        phoneNumbers: phoneNumbersToCheckFor,
       });
 
-    console.log(data);
+    const returnTypeIsArray = Array.isArray(phoneNumbers);
 
-    setPhoneNumbers(data);
+    console.log({ returnTypeIsArray });
+
+    console.log(phoneNumbers);
+
+    if (phoneNumbers && returnTypeIsArray) {
+      phoneNumbers = phoneNumbers?.filter(
+        (phoneNumber) => phoneNumber !== null
+      );
+
+      // @ts-ignore
+      const user = await phoneNumbers.user();
+
+      console.log({ user });
+    }
+
+    setPhoneNumbers(phoneNumbers);
   };
 
   return (

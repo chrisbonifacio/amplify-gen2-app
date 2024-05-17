@@ -14,7 +14,7 @@ const sqlSchema = generatedSqlSchema
     listEventsWithDecodedLatLong: a
       .query()
       // reference custom types added to the schema
-      .returns(a.ref("EventWithDecodedCoord").array())
+      .returns(a.json())
       .handler(
         a.handler.inlineSql(
           `SELECT

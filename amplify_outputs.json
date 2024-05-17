@@ -1,9 +1,9 @@
 {
   "auth": {
-    "user_pool_id": "us-east-1_hnZKUUOjT",
+    "user_pool_id": "us-east-1_qCXqT75ho",
     "aws_region": "us-east-1",
-    "user_pool_client_id": "2jnt06lc6i5lm96pk5ivhl5r0",
-    "identity_pool_id": "us-east-1:ab798ea5-085f-4529-aa64-866349b549c5",
+    "user_pool_client_id": "2to2spbj1uj5enijl489ko5emp",
+    "identity_pool_id": "us-east-1:578666d5-68d8-4efd-b67e-60e02d92e538",
     "standard_required_attributes": [
       "email"
     ],
@@ -23,9 +23,9 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://evr6rlxkxndovirqlxvcmrxpeq.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://4hw3akql7bgvhlvz5rxhe37eji.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-7wnbwpaj2fewxdcnxrbj67kff4",
+    "api_key": "da2-ahwrqkiggzc47akk6xpvckotxy",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AMAZON_COGNITO_USER_POOLS",
@@ -33,7 +33,73 @@
     ],
     "model_introspection": {
       "version": 1,
-      "models": {},
+      "models": {
+        "Todo": {
+          "name": "Todo",
+          "fields": {
+            "id": {
+              "name": "id",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "content": {
+              "name": "content",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "Todos",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {}
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "allow": "public",
+                    "provider": "apiKey",
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": false,
+            "primaryKeyFieldName": "id",
+            "sortKeyFieldNames": []
+          }
+        }
+      },
       "enums": {},
       "nonModels": {},
       "queries": {

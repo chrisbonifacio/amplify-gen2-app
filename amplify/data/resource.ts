@@ -5,8 +5,13 @@ import {
   defineFunction,
 } from "@aws-amplify/backend";
 
-const generateHaikuFunction = defineFunction({
+export const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0";
+
+export const generateHaikuFunction = defineFunction({
   entry: "generateHaiku.ts",
+  environment: {
+    MODEL_ID,
+  },
 });
 
 const schema = a.schema({
@@ -27,6 +32,7 @@ export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
   schema,
+  name: "AmplifyBedrockAPI",
   authorizationModes: {
     defaultAuthorizationMode: "apiKey",
     apiKeyAuthorizationMode: {

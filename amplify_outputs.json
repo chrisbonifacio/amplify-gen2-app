@@ -23,9 +23,9 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://ephqiposwzbptnhj7vtws2ebfu.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://wnq7bpsqwjhxvjas7gqw3vq5qe.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-uaxd3utbbvcgxokz3ujlgoxz6u",
+    "api_key": "da2-lnyrfocld5dntaavx2iapq5dhe",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AMAZON_COGNITO_USER_POOLS",
@@ -34,85 +34,43 @@
     "model_introspection": {
       "version": 1,
       "models": {
-        "User": {
-          "name": "User",
+        "RacingTable": {
+          "name": "RacingTable",
           "fields": {
-            "id": {
-              "name": "id",
-              "isArray": false,
-              "type": "ID",
-              "isRequired": true,
-              "attributes": []
-            },
-            "birthdate": {
-              "name": "birthdate",
+            "pk": {
+              "name": "pk",
               "isArray": false,
               "type": "String",
               "isRequired": true,
               "attributes": []
             },
-            "firstName": {
-              "name": "firstName",
+            "sk": {
+              "name": "sk",
               "isArray": false,
               "type": "String",
               "isRequired": true,
               "attributes": []
             },
-            "lastName": {
-              "name": "lastName",
+            "numeric": {
+              "name": "numeric",
               "isArray": false,
-              "type": "String",
-              "isRequired": true,
+              "type": "Float",
+              "isRequired": false,
               "attributes": []
             },
-            "username": {
-              "name": "username",
+            "results": {
+              "name": "results",
               "isArray": false,
-              "type": "String",
-              "isRequired": true,
+              "type": "AWSJSON",
+              "isRequired": false,
               "attributes": []
             },
-            "phoneNumber": {
-              "name": "phoneNumber",
+            "status": {
+              "name": "status",
               "isArray": false,
               "type": {
-                "model": "PhoneNumber"
+                "enum": "RaceStatus"
               },
-              "isRequired": false,
-              "attributes": [],
-              "association": {
-                "connectionType": "HAS_ONE",
-                "associatedWith": [
-                  "userId"
-                ],
-                "targetNames": []
-              }
-            },
-            "pushToken": {
-              "name": "pushToken",
-              "isArray": false,
-              "type": "String",
-              "isRequired": false,
-              "attributes": []
-            },
-            "profileImage": {
-              "name": "profileImage",
-              "isArray": false,
-              "type": "AWSURL",
-              "isRequired": false,
-              "attributes": []
-            },
-            "profileImageBlurhash": {
-              "name": "profileImageBlurhash",
-              "isArray": false,
-              "type": "String",
-              "isRequired": false,
-              "attributes": []
-            },
-            "searchTerm": {
-              "name": "searchTerm",
-              "isArray": false,
-              "type": "String",
               "isRequired": true,
               "attributes": []
             },
@@ -134,7 +92,7 @@
             }
           },
           "syncable": true,
-          "pluralName": "Users",
+          "pluralName": "RacingTables",
           "attributes": [
             {
               "type": "model",
@@ -144,106 +102,31 @@
               "type": "key",
               "properties": {
                 "fields": [
-                  "id"
+                  "pk",
+                  "sk",
+                  "status"
                 ]
               }
             },
             {
               "type": "key",
               "properties": {
-                "name": "usersBySearchTermAndId",
-                "queryField": "listUsersBySearchTerm",
+                "name": "racingTablesByPkAndNumeric",
+                "queryField": "listByLocalSecondaryIndex",
                 "fields": [
-                  "searchTerm",
-                  "id"
+                  "pk",
+                  "numeric"
                 ]
               }
-            },
-            {
-              "type": "auth",
-              "properties": {
-                "rules": [
-                  {
-                    "allow": "public",
-                    "provider": "apiKey",
-                    "operations": [
-                      "create",
-                      "update",
-                      "delete",
-                      "read"
-                    ]
-                  }
-                ]
-              }
-            }
-          ],
-          "primaryKeyInfo": {
-            "isCustomPrimaryKey": false,
-            "primaryKeyFieldName": "id",
-            "sortKeyFieldNames": []
-          }
-        },
-        "PhoneNumber": {
-          "name": "PhoneNumber",
-          "fields": {
-            "phoneNumber": {
-              "name": "phoneNumber",
-              "isArray": false,
-              "type": "String",
-              "isRequired": true,
-              "attributes": []
-            },
-            "userId": {
-              "name": "userId",
-              "isArray": false,
-              "type": "String",
-              "isRequired": true,
-              "attributes": []
-            },
-            "user": {
-              "name": "user",
-              "isArray": false,
-              "type": {
-                "model": "User"
-              },
-              "isRequired": false,
-              "attributes": [],
-              "association": {
-                "connectionType": "BELONGS_TO",
-                "targetNames": [
-                  "userId"
-                ]
-              }
-            },
-            "createdAt": {
-              "name": "createdAt",
-              "isArray": false,
-              "type": "AWSDateTime",
-              "isRequired": false,
-              "attributes": [],
-              "isReadOnly": true
-            },
-            "updatedAt": {
-              "name": "updatedAt",
-              "isArray": false,
-              "type": "AWSDateTime",
-              "isRequired": false,
-              "attributes": [],
-              "isReadOnly": true
-            }
-          },
-          "syncable": true,
-          "pluralName": "PhoneNumbers",
-          "attributes": [
-            {
-              "type": "model",
-              "properties": {}
             },
             {
               "type": "key",
               "properties": {
+                "name": "racingTablesBySkAndNumeric",
+                "queryField": "listByGlobalSecondaryIndex",
                 "fields": [
-                  "phoneNumber"
+                  "sk",
+                  "numeric"
                 ]
               }
             },
@@ -267,33 +150,25 @@
           ],
           "primaryKeyInfo": {
             "isCustomPrimaryKey": true,
-            "primaryKeyFieldName": "phoneNumber",
-            "sortKeyFieldNames": []
+            "primaryKeyFieldName": "pk",
+            "sortKeyFieldNames": [
+              "sk",
+              "status"
+            ]
           }
         }
       },
-      "enums": {},
-      "nonModels": {},
-      "queries": {
-        "checkBatchOfPhoneNumbersForActiveUsers": {
-          "name": "checkBatchOfPhoneNumbersForActiveUsers",
-          "isArray": true,
-          "type": {
-            "model": "PhoneNumber"
-          },
-          "isRequired": false,
-          "isArrayNullable": true,
-          "arguments": {
-            "phoneNumbers": {
-              "name": "phoneNumbers",
-              "isArray": true,
-              "type": "String",
-              "isRequired": false,
-              "isArrayNullable": true
-            }
-          }
+      "enums": {
+        "RaceStatus": {
+          "name": "RaceStatus",
+          "values": [
+            "STARTED",
+            "FINISHED",
+            "DISQUALIFIED"
+          ]
         }
-      }
+      },
+      "nonModels": {}
     }
   },
   "version": "1"

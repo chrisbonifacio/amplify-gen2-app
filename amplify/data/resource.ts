@@ -1,25 +1,70 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  RacingTable: a
-    .model({
-      pk: a.string().required(),
-      sk: a.string().required(),
-      numeric: a.float(),
+  Race: a.customType({
+    raceId: a.string().required(),
+    classId: a.string(),
+    results: a.json(),
+  }),
+  RacingTable: a.customType({
+    pk: a.string().required(),
+    sk: a.string().required(),
+    numeric: a.float(),
+    results: a.json(),
+  }),
+  createRace: a
+    .mutation()
+    .arguments({
+      raceId: a.string().required(),
+      classId: a.string(),
       results: a.json(),
     })
-    // Main composite key: PK and SK
-    .identifier(["pk", "sk"])
-
-    .secondaryIndexes((index) => [
-      // LSI: Partition key: pk, Sort key: numeric
-      index("pk").sortKeys(["numeric"]).queryField("listByLocalSecondaryIndex"),
-
-      // GSI: Partition key: sk, Sort key: numeric
-      index("sk")
-        .sortKeys(["numeric"])
-        .queryField("listByGlobalSecondaryIndex"),
-    ])
+    .returns(a.ref("RacingTable"))
+    .handler(
+      a.handler.custom({
+        dataSource: "RacingTableDataSource",
+        entry: "./createRace.js",
+      })
+    )
+    .authorization((allow) => [allow.publicApiKey()]),
+  getRaceResultsByRacerId: a
+    .query()
+    .arguments({
+      racerId: a.string().required(),
+    })
+    .returns(a.ref("RacingTable").array())
+    .handler(
+      a.handler.custom({
+        dataSource: "RacingTableDataSource",
+        entry: "./getRaceResultsByRacerId.js",
+      })
+    )
+    .authorization((allow) => [allow.publicApiKey()]),
+  getRacesByClassId: a
+    .query()
+    .arguments({
+      classId: a.string().required(),
+    })
+    .returns(a.ref("RacingTable").array())
+    .handler(
+      a.handler.custom({
+        dataSource: "RacingTableDataSource",
+        entry: "./getRacesByClassId.js",
+      })
+    )
+    .authorization((allow) => [allow.publicApiKey()]),
+  getBestPerformanceByClassId: a
+    .query()
+    .arguments({
+      classId: a.string().required(),
+    })
+    .returns(a.ref("RacingTable").array())
+    .handler(
+      a.handler.custom({
+        dataSource: "RacingTableDataSource",
+        entry: "./getBestPerformanceByClassId.js",
+      })
+    )
     .authorization((allow) => [allow.publicApiKey()]),
 });
 
@@ -30,9 +75,8 @@ export const data = defineData({
   name: "MyLibrary",
   authorizationModes: {
     defaultAuthorizationMode: "apiKey",
-    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
-      expiresInDays: 30,
+      expiresInDays: 365,
     },
   },
 });

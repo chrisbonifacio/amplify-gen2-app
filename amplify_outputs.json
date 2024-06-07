@@ -1,9 +1,9 @@
 {
   "auth": {
-    "user_pool_id": "us-east-1_qCXqT75ho",
+    "user_pool_id": "us-east-1_NpEZsYSy7",
     "aws_region": "us-east-1",
-    "user_pool_client_id": "2to2spbj1uj5enijl489ko5emp",
-    "identity_pool_id": "us-east-1:578666d5-68d8-4efd-b67e-60e02d92e538",
+    "user_pool_client_id": "38l9dof1ma5l77mgkiphpl78ih",
+    "identity_pool_id": "us-east-1:4ae9b7d0-989c-4d3f-ae55-fd7ce2028d75",
     "standard_required_attributes": [
       "email"
     ],
@@ -23,9 +23,9 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://wnq7bpsqwjhxvjas7gqw3vq5qe.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://qyafoaaadjb57nm5vetxiis3si.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-lnyrfocld5dntaavx2iapq5dhe",
+    "api_key": "da2-cyqeyiwvgnehphovlizr7s55aa",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AMAZON_COGNITO_USER_POOLS",
@@ -33,7 +33,35 @@
     ],
     "model_introspection": {
       "version": 1,
-      "models": {
+      "models": {},
+      "enums": {},
+      "nonModels": {
+        "Race": {
+          "name": "Race",
+          "fields": {
+            "raceId": {
+              "name": "raceId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "classId": {
+              "name": "classId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "results": {
+              "name": "results",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            }
+          }
+        },
         "RacingTable": {
           "name": "RacingTable",
           "fields": {
@@ -64,111 +92,93 @@
               "type": "AWSJSON",
               "isRequired": false,
               "attributes": []
-            },
-            "status": {
-              "name": "status",
-              "isArray": false,
-              "type": {
-                "enum": "RaceStatus"
-              },
-              "isRequired": true,
-              "attributes": []
-            },
-            "createdAt": {
-              "name": "createdAt",
-              "isArray": false,
-              "type": "AWSDateTime",
-              "isRequired": false,
-              "attributes": [],
-              "isReadOnly": true
-            },
-            "updatedAt": {
-              "name": "updatedAt",
-              "isArray": false,
-              "type": "AWSDateTime",
-              "isRequired": false,
-              "attributes": [],
-              "isReadOnly": true
             }
-          },
-          "syncable": true,
-          "pluralName": "RacingTables",
-          "attributes": [
-            {
-              "type": "model",
-              "properties": {}
-            },
-            {
-              "type": "key",
-              "properties": {
-                "fields": [
-                  "pk",
-                  "sk",
-                  "status"
-                ]
-              }
-            },
-            {
-              "type": "key",
-              "properties": {
-                "name": "racingTablesByPkAndNumeric",
-                "queryField": "listByLocalSecondaryIndex",
-                "fields": [
-                  "pk",
-                  "numeric"
-                ]
-              }
-            },
-            {
-              "type": "key",
-              "properties": {
-                "name": "racingTablesBySkAndNumeric",
-                "queryField": "listByGlobalSecondaryIndex",
-                "fields": [
-                  "sk",
-                  "numeric"
-                ]
-              }
-            },
-            {
-              "type": "auth",
-              "properties": {
-                "rules": [
-                  {
-                    "allow": "public",
-                    "provider": "apiKey",
-                    "operations": [
-                      "create",
-                      "update",
-                      "delete",
-                      "read"
-                    ]
-                  }
-                ]
-              }
-            }
-          ],
-          "primaryKeyInfo": {
-            "isCustomPrimaryKey": true,
-            "primaryKeyFieldName": "pk",
-            "sortKeyFieldNames": [
-              "sk",
-              "status"
-            ]
           }
         }
       },
-      "enums": {
-        "RaceStatus": {
-          "name": "RaceStatus",
-          "values": [
-            "STARTED",
-            "FINISHED",
-            "DISQUALIFIED"
-          ]
+      "queries": {
+        "getRaceResultsByRacerId": {
+          "name": "getRaceResultsByRacerId",
+          "isArray": true,
+          "type": {
+            "nonModel": "RacingTable"
+          },
+          "isRequired": false,
+          "isArrayNullable": true,
+          "arguments": {
+            "racerId": {
+              "name": "racerId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "getRacesByClassId": {
+          "name": "getRacesByClassId",
+          "isArray": true,
+          "type": {
+            "nonModel": "RacingTable"
+          },
+          "isRequired": false,
+          "isArrayNullable": true,
+          "arguments": {
+            "classId": {
+              "name": "classId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
+        "getBestPerformanceByClassId": {
+          "name": "getBestPerformanceByClassId",
+          "isArray": true,
+          "type": {
+            "nonModel": "RacingTable"
+          },
+          "isRequired": false,
+          "isArrayNullable": true,
+          "arguments": {
+            "classId": {
+              "name": "classId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
         }
       },
-      "nonModels": {}
+      "mutations": {
+        "createRace": {
+          "name": "createRace",
+          "isArray": false,
+          "type": {
+            "nonModel": "RacingTable"
+          },
+          "isRequired": false,
+          "arguments": {
+            "raceId": {
+              "name": "raceId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            },
+            "classId": {
+              "name": "classId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false
+            },
+            "results": {
+              "name": "results",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false
+            }
+          }
+        }
+      }
     }
   },
   "version": "1"

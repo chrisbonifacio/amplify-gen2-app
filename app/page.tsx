@@ -1,38 +1,36 @@
 "use client";
 import { Schema } from "@/amplify/data/resource";
 import { generateClient } from "aws-amplify/api";
-import { listUsersBySearchTerm } from "@/app/services/api/AWS/queries";
 
 const client = generateClient<Schema>({ authMode: "apiKey" });
 
 export default function Home() {
   const addRacerToRace = async () => {
-    const { data, errors } = await client.models.RacingTable.create({
-      pk: "racer-1",
-      sk: "race-1",
+    const { data, errors } = await client.mutations.createRace({
+      raceId: "1",
+      classId: "1",
     });
 
     console.log(data);
   };
 
-  const getRaceResultsByRacerID = async () => {
-    const { data, errors } = await client.models.RacingTable.list({
-      pk: "<racerID>",
+  const getRaceResultsByRacerId = async () => {
+    const { data, errors } = await client.queries.getRaceResultsByRacerId({
+      racerId: "1",
     });
   };
 
-  const listRacesByClassID = async () => {
-    const { data, errors } =
-      await client.models.RacingTable.listByLocalSecondaryIndex({
-        pk: "<classID>",
-      });
+  const getRacesByClassID = async () => {
+    const { data, errors } = await client.queries.getRacesByClassId({
+      classId: "<classID>",
+    });
 
     console.log(data);
   };
 
-  const getBestPerformanceByRacerForClassID = async () => {
-    const { data, errors } = await client.models.RacingTable.list({
-      pk: "<classID>",
+  const getBestPerformancebyClassID = async () => {
+    const { data, errors } = await client.queries.getBestPerformanceByClassIc({
+      classId: "<classID>",
     });
 
     console.log(data);

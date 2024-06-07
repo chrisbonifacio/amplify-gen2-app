@@ -1,38 +1,65 @@
-import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import {
+  type ClientSchema,
+  a,
+  defineData,
+  defineFunction,
+} from "@aws-amplify/backend";
+
+const addCognitoUser = defineFunction({
+  entry: "./handler.ts",
+});
 
 const schema = a.schema({
-  RacingTable: a
+  Todo: a
     .model({
-      pk: a.string().required(),
-      sk: a.string().required(),
-      numeric: a.float(),
-      results: a.json(),
+      title: a.string().required(),
+      goalId: a.id(),
+      goal: a.belongsTo("Goal", "goalId"),
     })
-    // Main composite key: PK and SK
-    .identifier(["pk", "sk"])
-
-    .secondaryIndexes((index) => [
-      // LSI: Partition key: pk, Sort key: numeric
-      index("pk").sortKeys(["numeric"]).queryField("listByLocalSecondaryIndex"),
-
-      // GSI: Partition key: sk, Sort key: numeric
-      index("sk")
-        .sortKeys(["numeric"])
-        .queryField("listByGlobalSecondaryIndex"),
-    ])
+    .authorization((allow) => [
+      allow.owner(),
+      allow.group("Users").to(["read"]),
+      allow.group("Administrators"),
+    ]),
+  Goal: a
+    .model({
+      title: a.string().required(),
+      todos: a.hasMany("Todo", "goalId"),
+    })
+    .authorization((allow) => [
+      allow.owner(),
+      allow.group("Users").to(["read"]),
+      allow.group("Administrators"),
+    ]),
+  Cart: a
+    .model({
+      items: a.string().required().array(),
+      // 1. Create reference field
+      customerId: a.id(),
+      // 2. Create relationship field with the reference field
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+  Customer: a
+    .model({
+      name: a.string(),
+      // 3. Create relationship field with the reference field
+      //    from the Cart model
+      activeCart: a.hasOne("Cart", "customerId"),
+    })
     .authorization((allow) => [allow.publicApiKey()]),
 });
+
+// const exportSchema = schema.transform();
 
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
   schema,
-  name: "MyLibrary",
+  name: "OripaData",
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
-    // API Key is used for a.allow.public() rules
+    defaultAuthorizationMode: "userPool",
     apiKeyAuthorizationMode: {
-      expiresInDays: 30,
+      expiresInDays: 365,
     },
   },
 });

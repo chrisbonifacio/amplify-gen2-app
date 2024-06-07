@@ -1,108 +1,39 @@
 "use client";
-import { Schema } from "@/amplify/data/resource";
+import { type Schema } from "@/amplify/data/resource";
 import { generateClient } from "aws-amplify/api";
-import { listUsersBySearchTerm } from "@/app/services/api/AWS/queries";
+import { useEffect, useState } from "react";
 
-const client = generateClient<Schema>({ authMode: "apiKey" });
+const client = generateClient<Schema>();
+
+type Todo = Schema["Todo"]["type"];
 
 export default function Home() {
-  const addRacerToRace = async () => {
-    const { data, errors } = await client.models.RacingTable.create({
-      pk: "racer-1",
-      sk: "race-1",
-    });
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-    console.log(data);
-  };
-
-  const getRaceResultsByRacerID = async () => {
-    const { data, errors } = await client.models.RacingTable.list({
-      pk: "<racerID>",
+  const createTodo = async () => {
+    await client.models.Todo.create({
+      title: "New Todo",
     });
   };
 
-  const listRacesByClassID = async () => {
-    const { data, errors } =
-      await client.models.RacingTable.listByLocalSecondaryIndex({
-        pk: "<classID>",
-      });
-
-    console.log(data);
-  };
-
-  const getBestPerformanceByRacerForClassID = async () => {
-    const { data, errors } = await client.models.RacingTable.list({
-      pk: "<classID>",
+  useEffect(() => {
+    const sub = client.models.Todo.observeQuery().subscribe({
+      next: async ({ isSynced, items }) => {
+        if (isSynced) setTodos(items);
+      },
     });
 
-    console.log(data);
-  };
-
-  const getListOfTopScoresByRaceID = async () => {
-    const { data, errors } =
-      await client.models.RacingTable.listByGlobalSecondaryIndex(
-        {
-          sk: "<raceID>",
-        },
-        { sortDirection: "DESC" }
-      );
-
-    console.log(data);
-  };
-
-  const getSecondBySecondPerformanceByRacerForAllRaces = async () => {
-    const { data, errors } = await client.models.RacingTable.list({
-      pk: "<racerID>",
-    });
-
-    console.log(data);
-  };
-
-  // const listUsersBySearchTermFunction = async () => {
-  //   try {
-  //     const { data, errors } = await client.models.User.listUsersBySearchTerm({
-  //       searchTerm: "ABCD",
-  //       firstNameLastName: {
-  //         eq: {
-  //           firstName: "Chris",
-  //           lastName: "Bonifacio",
-  //         },
-  //       },
-  //     });
-
-  //     if (errors) {
-  //       console.log({ errors });
-  //     }
-
-  //     const res = await client.graphql({
-  //       query: listUsersBySearchTerm,
-  //       variables: {
-  //         searchTerm: "ABCD",
-  //         firstNameLastName: {
-  //           eq: {
-  //             firstName: "Chris",
-  //             lastName: "Bonifacio",
-  //           },
-  //         },
-  //       },
-  //     });
-
-  //     console.log(data);
-
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    return sub.unsubscribe();
+  }, []);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        <button onClick={addRacerToRace}>Add Racer to Race</button>
-        {/* <button onClick={listUsersBySearchTermFunction}>
-          List Users By Search Term
-        </button> */}
+        <button onClick={createTodo}>Create Todo</button>
       </div>
+      {todos.map((todo) => (
+        <div key={todo.id}>{todo.title}</div>
+      ))}
     </main>
   );
 }

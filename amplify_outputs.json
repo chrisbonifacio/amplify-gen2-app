@@ -1,9 +1,9 @@
 {
   "auth": {
-    "user_pool_id": "us-east-1_qCXqT75ho",
+    "user_pool_id": "us-east-1_NpEZsYSy7",
     "aws_region": "us-east-1",
-    "user_pool_client_id": "2to2spbj1uj5enijl489ko5emp",
-    "identity_pool_id": "us-east-1:578666d5-68d8-4efd-b67e-60e02d92e538",
+    "user_pool_client_id": "38l9dof1ma5l77mgkiphpl78ih",
+    "identity_pool_id": "us-east-1:4ae9b7d0-989c-4d3f-ae55-fd7ce2028d75",
     "standard_required_attributes": [
       "email"
     ],
@@ -23,56 +23,55 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://wnq7bpsqwjhxvjas7gqw3vq5qe.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://7a27gnfbrbghvftshvdimi45nm.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-lnyrfocld5dntaavx2iapq5dhe",
-    "default_authorization_type": "API_KEY",
+    "api_key": "da2-sbuxjdrac5hcva7oklojmfoeia",
+    "default_authorization_type": "AMAZON_COGNITO_USER_POOLS",
     "authorization_types": [
-      "AMAZON_COGNITO_USER_POOLS",
+      "API_KEY",
       "AWS_IAM"
     ],
     "model_introspection": {
       "version": 1,
       "models": {
-        "RacingTable": {
-          "name": "RacingTable",
+        "Todo": {
+          "name": "Todo",
           "fields": {
-            "pk": {
-              "name": "pk",
+            "id": {
+              "name": "id",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "title": {
+              "name": "title",
               "isArray": false,
               "type": "String",
               "isRequired": true,
               "attributes": []
             },
-            "sk": {
-              "name": "sk",
+            "goalId": {
+              "name": "goalId",
               "isArray": false,
-              "type": "String",
-              "isRequired": true,
-              "attributes": []
-            },
-            "numeric": {
-              "name": "numeric",
-              "isArray": false,
-              "type": "Float",
+              "type": "ID",
               "isRequired": false,
               "attributes": []
             },
-            "results": {
-              "name": "results",
-              "isArray": false,
-              "type": "AWSJSON",
-              "isRequired": false,
-              "attributes": []
-            },
-            "status": {
-              "name": "status",
+            "goal": {
+              "name": "goal",
               "isArray": false,
               "type": {
-                "enum": "RaceStatus"
+                "model": "Goal"
               },
-              "isRequired": true,
-              "attributes": []
+              "isRequired": false,
+              "attributes": [],
+              "association": {
+                "connectionType": "BELONGS_TO",
+                "targetNames": [
+                  "goalId"
+                ]
+              }
             },
             "createdAt": {
               "name": "createdAt",
@@ -92,51 +91,46 @@
             }
           },
           "syncable": true,
-          "pluralName": "RacingTables",
+          "pluralName": "Todos",
           "attributes": [
             {
               "type": "model",
               "properties": {}
             },
             {
-              "type": "key",
-              "properties": {
-                "fields": [
-                  "pk",
-                  "sk",
-                  "status"
-                ]
-              }
-            },
-            {
-              "type": "key",
-              "properties": {
-                "name": "racingTablesByPkAndNumeric",
-                "queryField": "listByLocalSecondaryIndex",
-                "fields": [
-                  "pk",
-                  "numeric"
-                ]
-              }
-            },
-            {
-              "type": "key",
-              "properties": {
-                "name": "racingTablesBySkAndNumeric",
-                "queryField": "listByGlobalSecondaryIndex",
-                "fields": [
-                  "sk",
-                  "numeric"
-                ]
-              }
-            },
-            {
               "type": "auth",
               "properties": {
                 "rules": [
                   {
-                    "allow": "public",
-                    "provider": "apiKey",
+                    "provider": "userPools",
+                    "ownerField": "owner",
+                    "allow": "owner",
+                    "identityClaim": "cognito:username",
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "read"
+                    ],
+                    "groups": [
+                      "Users"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "Administrators"
+                    ],
                     "operations": [
                       "create",
                       "update",
@@ -149,27 +143,127 @@
             }
           ],
           "primaryKeyInfo": {
-            "isCustomPrimaryKey": true,
-            "primaryKeyFieldName": "pk",
-            "sortKeyFieldNames": [
-              "sk",
-              "status"
-            ]
+            "isCustomPrimaryKey": false,
+            "primaryKeyFieldName": "id",
+            "sortKeyFieldNames": []
+          }
+        },
+        "Goal": {
+          "name": "Goal",
+          "fields": {
+            "id": {
+              "name": "id",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "title": {
+              "name": "title",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "todos": {
+              "name": "todos",
+              "isArray": true,
+              "type": {
+                "model": "Todo"
+              },
+              "isRequired": false,
+              "attributes": [],
+              "isArrayNullable": true,
+              "association": {
+                "connectionType": "HAS_MANY",
+                "associatedWith": [
+                  "goalId"
+                ]
+              }
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "Goals",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {}
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "provider": "userPools",
+                    "ownerField": "owner",
+                    "allow": "owner",
+                    "identityClaim": "cognito:username",
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "operations": [
+                      "read"
+                    ],
+                    "groups": [
+                      "Users"
+                    ]
+                  },
+                  {
+                    "groupClaim": "cognito:groups",
+                    "provider": "userPools",
+                    "allow": "groups",
+                    "groups": [
+                      "Administrators"
+                    ],
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": false,
+            "primaryKeyFieldName": "id",
+            "sortKeyFieldNames": []
           }
         }
       },
-      "enums": {
-        "RaceStatus": {
-          "name": "RaceStatus",
-          "values": [
-            "STARTED",
-            "FINISHED",
-            "DISQUALIFIED"
-          ]
-        }
-      },
+      "enums": {},
       "nonModels": {}
     }
+  },
+  "storage": {
+    "aws_region": "us-east-1",
+    "bucket_name": "amplify-amplifygen2app-cbon-mybucketbucketb8786754-7ugijwe3lade"
   },
   "version": "1"
 }

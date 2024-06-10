@@ -23,9 +23,9 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://qyafoaaadjb57nm5vetxiis3si.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://ux5da5oamrgcdnipmtc26gov6a.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-cyqeyiwvgnehphovlizr7s55aa",
+    "api_key": "da2-jyzsbi7hvzhvhoka63frd4nbp4",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AMAZON_COGNITO_USER_POOLS",
@@ -36,32 +36,6 @@
       "models": {},
       "enums": {},
       "nonModels": {
-        "Race": {
-          "name": "Race",
-          "fields": {
-            "raceId": {
-              "name": "raceId",
-              "isArray": false,
-              "type": "String",
-              "isRequired": true,
-              "attributes": []
-            },
-            "classId": {
-              "name": "classId",
-              "isArray": false,
-              "type": "String",
-              "isRequired": false,
-              "attributes": []
-            },
-            "results": {
-              "name": "results",
-              "isArray": false,
-              "type": "AWSJSON",
-              "isRequired": false,
-              "attributes": []
-            }
-          }
-        },
         "RacingTable": {
           "name": "RacingTable",
           "fields": {

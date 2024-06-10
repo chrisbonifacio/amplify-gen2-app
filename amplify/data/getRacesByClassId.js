@@ -9,6 +9,7 @@ export function request(ctx) {
       pk: `class-${classId}`,
       sk: "results",
     },
+    index: "LocalSecondaryIndex",
   });
 }
 

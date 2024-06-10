@@ -1,11 +1,6 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  Race: a.customType({
-    raceId: a.string().required(),
-    classId: a.string(),
-    results: a.json(),
-  }),
   RacingTable: a.customType({
     pk: a.string().required(),
     sk: a.string().required(),

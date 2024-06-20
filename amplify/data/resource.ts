@@ -6,7 +6,11 @@ const schema = a.schema({
       content: a.string(),
       isDone: a.boolean(),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [
+      allow.publicApiKey(),
+      allow.guest(),
+      allow.authenticated("identityPool"),
+    ]),
   OrderStatus: a.enum(["PENDING", "SHIPPED", "DELIVERED"]),
   OrderStatusChange: a.customType({
     orderId: a.id(),
@@ -69,7 +73,7 @@ export const data = defineData({
   schema,
   name: "MyLibrary",
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
+    defaultAuthorizationMode: "iam",
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
     },

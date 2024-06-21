@@ -1,9 +1,10 @@
 {
   "auth": {
-    "user_pool_id": "us-east-1_sNiljtR8Z",
+    "user_pool_id": "us-east-1_NpEZsYSy7",
     "aws_region": "us-east-1",
-    "user_pool_client_id": "2o154nrm5jdq00ldg2vhvh486l",
-    "identity_pool_id": "us-east-1:7ba2ea08-0fba-43f9-b44a-d0c8bbe68925",
+    "user_pool_client_id": "38l9dof1ma5l77mgkiphpl78ih",
+    "identity_pool_id": "us-east-1:4ae9b7d0-989c-4d3f-ae55-fd7ce2028d75",
+    "mfa_methods": [],
     "standard_required_attributes": [
       "email"
     ],
@@ -13,6 +14,7 @@
     "user_verification_types": [
       "email"
     ],
+    "mfa_configuration": "OFF",
     "password_policy": {
       "min_length": 8,
       "require_numbers": true,
@@ -23,9 +25,9 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://evr6rlxkxndovirqlxvcmrxpeq.appsync-api.us-east-1.amazonaws.com/graphql",
+    "url": "https://duib2u3pxrfabh53o57aprkin4.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_region": "us-east-1",
-    "api_key": "da2-7wnbwpaj2fewxdcnxrbj67kff4",
+    "api_key": "da2-br3puodimzhnrps6rbs2gogmbq",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AMAZON_COGNITO_USER_POOLS",
@@ -34,8 +36,8 @@
     "model_introspection": {
       "version": 1,
       "models": {
-        "Todo": {
-          "name": "Todo",
+        "Song": {
+          "name": "Song",
           "fields": {
             "id": {
               "name": "id",
@@ -44,8 +46,15 @@
               "isRequired": true,
               "attributes": []
             },
-            "content": {
-              "name": "content",
+            "name": {
+              "name": "name",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "coverArtPath": {
+              "name": "coverArtPath",
               "isArray": false,
               "type": "String",
               "isRequired": false,
@@ -69,21 +78,108 @@
             }
           },
           "syncable": true,
-          "pluralName": "Todos",
+          "pluralName": "Songs",
           "attributes": [
             {
               "type": "model",
               "properties": {}
             },
             {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "id"
+                ]
+              }
+            },
+            {
               "type": "auth",
               "properties": {
                 "rules": [
                   {
-                    "provider": "userPools",
-                    "ownerField": "owners",
-                    "allow": "owner",
-                    "identityClaim": "cognito:username",
+                    "allow": "public",
+                    "provider": "apiKey",
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": false,
+            "primaryKeyFieldName": "id",
+            "sortKeyFieldNames": []
+          }
+        },
+        "PhotoAlbum": {
+          "name": "PhotoAlbum",
+          "fields": {
+            "id": {
+              "name": "id",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "name": {
+              "name": "name",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "imagePaths": {
+              "name": "imagePaths",
+              "isArray": true,
+              "type": "String",
+              "isRequired": false,
+              "attributes": [],
+              "isArrayNullable": true
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "PhotoAlbums",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {}
+            },
+            {
+              "type": "key",
+              "properties": {
+                "fields": [
+                  "id"
+                ]
+              }
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "allow": "public",
+                    "provider": "apiKey",
                     "operations": [
                       "create",
                       "update",
@@ -105,6 +201,10 @@
       "enums": {},
       "nonModels": {}
     }
+  },
+  "storage": {
+    "aws_region": "us-east-1",
+    "bucket_name": "amplify-amplifygen2app-cb-amplifygen2filesbucketd3-iq1buyxtxyih"
   },
   "version": "1"
 }

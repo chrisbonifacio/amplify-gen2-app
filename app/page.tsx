@@ -416,9 +416,28 @@ function App({ signOut, user }: WithAuthenticatorProps) {
     setCurrentImages([]);
   }
 
+  async function uploadPublicFile(e: any) {
+    if (!e.target.files) return;
+
+    const file = e.target.files[0];
+
+    try {
+      const uploadResult = await uploadData({
+        path: `public/test.txt`,
+        data: "testing 1 2 3",
+      });
+
+      console.log({ uploadResult });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <main className="app-container">
       <h1 className="greeting">Hello {user?.username}!</h1>
+      <button onClick={uploadPublicFile}>Upload Public File</button>
+
       <h2 className="current-album">
         Current PhotoAlbum: {currentPhotoAlbum?.id}
       </h2>

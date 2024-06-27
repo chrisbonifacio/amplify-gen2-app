@@ -9,10 +9,6 @@ import { defineFunction } from "@aws-amplify/backend";
 
 const client = generateClient<Schema>();
 
-const myFunction = defineFunction();
-
-myFunction.getInstance().resources.lambda.configureAsyncInvoke({});
-
 const App = () => {
   const createMessage = async () => {
     const { data, errors } = await client.models.Message.create({

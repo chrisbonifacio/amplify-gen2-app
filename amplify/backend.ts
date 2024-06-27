@@ -3,12 +3,7 @@ import { auth } from "./auth/resource";
 import { data } from "./data/resource";
 import { Stack } from "aws-cdk-lib";
 import { SecurityGroup, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
-import {
-  Effect,
-  PolicyStatement,
-  Role,
-  ServicePrincipal,
-} from "aws-cdk-lib/aws-iam";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 const myFunction = defineFunction({
   entry: "./functions/handler.ts",

@@ -5,7 +5,6 @@ import "@aws-amplify/ui-react/styles.css";
 import CustomerCreateForm from "@/ui-components/CustomerCreateForm";
 import { generateClient } from "aws-amplify/api";
 import { Schema } from "@/amplify/data/resource";
-import { defineFunction } from "@aws-amplify/backend";
 
 const client = generateClient<Schema>();
 

@@ -1,48 +1,41 @@
-import { a, defineData, type ClientSchema } from "@aws-amplify/backend";
+import { a, ClientSchema, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  Customer: a
+  Todo: a
     .model({
-      fullName: a.string(),
-      email: a.email(),
-      phone: a.phone(),
-      billingInformation: a.hasOne("BillingInformation", "customerId"),
-      owner: a.string(),
-    })
-    .authorization((allow) => [allow.owner()]),
-  BillingInformation: a
-    .model({
-      customerId: a.id(),
-      customer: a.belongsTo("Customer", "customerId"),
-      identityCard: a.string(),
-      companyName: a.string(),
-      address: a.string(),
-      city: a.string(),
-      municipality: a.string(),
-      owner: a.string(),
-    })
-    .authorization((allow) => [allow.owner()]),
-  Message: a
-    .model({
-      roomId: a.id().required(),
-      createdAt: a.datetime(),
       content: a.string().required(),
+      done: a.boolean().default(false),
+      userId: a.id().required(),
+      user: a.belongsTo("User", "userId"),
     })
-    .secondaryIndexes((index) => [
-      index("roomId").sortKeys(["createdAt"]).queryField("listByDate"),
-    ])
-    .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.guest()]),
+  Group: a.enum(["ADMIN", "CUSTOMER"]),
+  User: a
+    .model({
+      username: a.string().required(),
+      group: a.ref("Group").required(),
+      todos: a.hasMany("Todo", "userId"),
+    })
+    .authorization((allow) => [allow.guest()]),
+  Installer: a
+    .model({
+      id: a.id(),
+      firstName: a.string(),
+      lastName: a.string(),
+      jobCredit: a.integer().default(5000),
+    })
+    .authorization((allow) => [allow.guest(), allow.authenticated()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
   schema,
-  name: "TestAPI",
   authorizationModes: {
-    defaultAuthorizationMode: "identityPool",
+    defaultAuthorizationMode: "apiKey",
+    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
-      expiresInDays: 365,
+      expiresInDays: 30,
     },
   },
 });
